@@ -67,4 +67,38 @@ converte (h,m) = h * 60 + m
 
 --d)
 converteM :: Int -> Hora
-converteM m = 
+converteM m =  (div m 60, mod m 60)
+
+--e)
+dif :: Hora -> Hora -> Int
+dif x y | p == q = 0
+        | p > q = p - q
+        | p < q = q - p 
+    where
+        p = converte x
+        q = converte y
+    
+--f)
+add :: Int -> Hora -> Hora
+add n x = converteM(n + converte x)
+
+--5
+
+data Semaforo = Verde | Amarelo | Vermelho deriving (Show, Eq)
+
+--a)
+next :: Semaforo -> Semaforo
+next Verde = Amarelo
+next Amarelo = Vermelho
+next Vermelho = Verde
+
+--b)
+stop :: Semaforo -> Bool
+stop Vermelho = True
+stop otherwise = False
+
+--c)
+safe :: Semaforo -> Semaforo -> Bool
+safe Verde Vermelho = True
+safe Vermelho Verde = True
+safe _ _ = False
