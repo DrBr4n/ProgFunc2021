@@ -95,10 +95,43 @@ next Vermelho = Verde
 --b)
 stop :: Semaforo -> Bool
 stop Vermelho = True
-stop otherwise = False
+stop otherwise =  False
 
 --c)
 safe :: Semaforo -> Semaforo -> Bool
 safe Verde Vermelho = True
 safe Vermelho Verde = True
 safe _ _ = False
+
+--6
+
+data Pont = Cartesiano Double Double | Polar Double Double deriving(Show, Eq)
+
+--a)
+posx :: Pont -> Double
+posx (Cartesiano x y) = x
+--posx (Polar r a) = r * cos(a)
+
+--b)
+posy :: Pont -> Double
+posy (Cartesiano x y) = y
+--posy (Polar r a) = r * sin(a)
+
+--c)
+raio :: Pont -> Double
+raio (Cartesiano x y) = sqrt(x^2 + y^2)
+raio (Polar r a) = r
+
+--d)
+
+--e)
+dists :: Pont -> Pont -> Double
+dists (Cartesiano x y) (Cartesiano a b) = sqrt((a-x)^2 + (b-y)^2)
+--dists
+
+--7)
+
+data Figura = Circulo Ponto Double
+            | Rectangulo Ponto Ponto
+            | Triangulo Ponto Ponto Ponto
+                deriving (Show,Eq)
