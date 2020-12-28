@@ -1,3 +1,5 @@
+import Data.Char
+
 --1
 
 --a)
@@ -78,3 +80,78 @@ bb (a,b,c) = b
 
 cc ::(a,b,c) -> c
 cc (a,b,c) = c
+
+--3
+--a)
+soDigitos :: [Char] -> [Char]
+soDigitos [] = []
+soDigitos (h:t) | isDigit h = h : soDigitos t
+                | otherwise = soDigitos t
+
+--b)
+minusculas :: [Char] -> Int
+minusculas [] = 0
+minusculas (h:t) | isLower h = 1 + minusculas t
+                 | otherwise = minusculas t
+
+--c)
+--nums :: String -> [Int]
+
+--4)
+
+type Polinomio = [Monomio]
+
+type Monomio = (Float,Int)
+
+--a)
+conta :: Int -> Polinomio -> Int
+conta n [] = 0
+conta n (h:t) | n == snd h = 1 + conta n t
+              | otherwise = conta n t
+
+--b)
+grau :: Polinomio -> Int
+grau [] = 0
+grau (h:t) = max (snd h) (grau t)
+
+--c)
+selgrau :: Int -> Polinomio -> Polinomio
+selgrau n [] = []
+selgrau n (h:t) | n == snd h = h : selgrau n t
+                | otherwise = selgrau n t
+
+--d)
+--deriv :: Polinomio -> Polinomio
+--deriv [] = []
+--deriv ((c,e):t) = (e * c, e - 1)
+
+--e)
+calcula :: Float -> Polinomio -> Float 
+calcula n [] = 0
+calcula n ((c,e):t) = c * n^e + calcula n t
+
+--f)
+simp :: Polinomio -> Polinomio
+simp [] = []
+simp (h:t) | fst h == 0 = simp t
+           | otherwise = h : simp t
+
+--g)
+--mult :: Monomio -> Polinomio -> Polinomio
+
+--h)
+--normaliza :: Polinomio -> Polinomio 
+
+--i)
+--soma :: Polinomio -> Polinomio -> Polinomio
+
+--j)
+--produto :: Polinomio -> Polinomio -> Polinomio
+
+--k)
+--ordena :: Polinomio -> Polinomio
+
+--l)
+equiv :: Polinomio -> Polinomio -> Bool
+equiv a b | calcula 2 a == calcula 2 b = True 
+          | otherwise = False 
