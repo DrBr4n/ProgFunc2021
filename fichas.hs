@@ -1,6 +1,5 @@
 import Data.Char
 
-
 --Ficha 1
 
 --1
@@ -46,12 +45,8 @@ nRaizes a b c | bin < 0 = 0
             | bin > 0 = 2
     where bin = b^2 - 4 * a * c
 
---b)
-
 --3
-
 type Hora = (Int, Int)
-
 --a)
 valida :: Hora -> Bool
 valida (h,m) | hvalid && mvalid = True
@@ -88,7 +83,6 @@ add :: Int -> Hora -> Hora
 add n x = converteM(n + converte x)
 
 --5
-
 data Semaforo = Verde | Amarelo | Vermelho deriving (Show, Eq)
 
 --a)
@@ -126,21 +120,6 @@ posy (Cartesiano x y) = y
 raio :: Pont -> Double
 raio (Cartesiano x y) = sqrt(x^2 + y^2)
 raio (Polar r a) = r
-
---d)
-
---e)
-dists :: Pont -> Pont -> Double
-dists (Cartesiano x y) (Cartesiano a b) = sqrt((a-x)^2 + (b-y)^2)
---dists
-
---7)
-
-data Figura = Circulo Ponto Double
-            | Rectangulo Ponto Ponto
-            | Triangulo Ponto Ponto Ponto
-                deriving (Show,Eq)
-
 
 --Ficha 2
 
@@ -238,13 +217,8 @@ minusculas [] = 0
 minusculas (h:t) | isLower h = 1 + minusculas t
                 | otherwise = minusculas t
 
---c)
---nums :: String -> [Int]
-
 --4)
-
 type Polinomio = [Monomio]
-
 type Monomio = (Float,Int)
 
 --a)
@@ -264,11 +238,6 @@ selgrau n [] = []
 selgrau n (h:t) | n == snd h = h : selgrau n t
                 | otherwise = selgrau n t
 
---d)
---deriv :: Polinomio -> Polinomio
---deriv [] = []
---deriv ((c,e):t) = (e * c, e - 1)
-
 --e)
 calcula :: Float -> Polinomio -> Float 
 calcula n [] = 0
@@ -280,26 +249,10 @@ simp [] = []
 simp (h:t) | fst h == 0 = simp t
         | otherwise = h : simp t
 
---g)
---mult :: Monomio -> Polinomio -> Polinomio
-
---h)
---normaliza :: Polinomio -> Polinomio 
-
---i)
---soma :: Polinomio -> Polinomio -> Polinomio
-
---j)
---produto :: Polinomio -> Polinomio -> Polinomio
-
---k)
---ordena :: Polinomio -> Polinomio
-
 --l)
 equiv :: Polinomio -> Polinomio -> Bool
 equiv a b | calcula 2 a == calcula 2 b = True 
         | otherwise = False
-
 
 --Ficha 3
 
@@ -352,5 +305,16 @@ nzp (h:t) | h > 0  = (0 + fs, 0 + sn, 1 + tr)
 
 --5
 divmod :: Integral a => a -> a -> (a, a)
-divmod x y | x > y =  (1 + fst(divmod (x-y) y), 0)
-           | x == y = (1, 0)
+divmod x y 
+        | x > y =  (1 + fst(divmod (x-y) y), 0 + snd(divmod (x-y) y))
+        | x == y = (1, 0)
+        | x < y =  (0, x)
+
+--6
+fromDigits :: [Int] -> Int
+fromDigits [] = 0
+fromDigits l = fromDigitsAux (length l-1) l
+
+fromDigitsAux :: Int -> [Int] -> Int
+fromDigitsAux _ [] = 0
+fromDigitsAux ac (h:t) = fromDigitsAux (ac-1) t + (h * 10^ac)
