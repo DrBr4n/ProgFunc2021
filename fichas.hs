@@ -1,4 +1,6 @@
 import Data.Char
+import Data.List
+
 
 --Ficha 1
 
@@ -120,6 +122,7 @@ posy (Cartesiano x y) = y
 raio :: Pont -> Double
 raio (Cartesiano x y) = sqrt(x^2 + y^2)
 raio (Polar r a) = r
+
 
 --Ficha 2
 
@@ -254,6 +257,7 @@ equiv :: Polinomio -> Polinomio -> Bool
 equiv a b | calcula 2 a == calcula 2 b = True 
         | otherwise = False
 
+
 --Ficha 3
 
 -- data Hora = H Int Int deriving Show
@@ -318,3 +322,72 @@ fromDigits l = fromDigitsAux (length l-1) l
 fromDigitsAux :: Int -> [Int] -> Int
 fromDigitsAux _ [] = 0
 fromDigitsAux ac (h:t) = fromDigitsAux (ac-1) t + (h * 10^ac)
+
+
+--Ficha 5
+
+--1
+--a)
+any' :: (a -> Bool) -> [a] -> Bool
+any' f [] = False
+any' f (x:xs) | f x = True
+              | otherwise = any' f xs
+
+--b)
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+--c)
+takeWhile' :: (a -> Bool) -> [a] -> [a]
+takeWhile' _ [] = []
+takeWhile' f (x:xs) | f x = x : takeWhile' f xs
+                    | otherwise = []
+
+--d)
+dropWhile' :: (a -> Bool) -> [a] -> [a]
+dropWhile' _ [] = []
+dropWhile' f (x:xs) | f x = dropWhile' f xs
+                    | otherwise = (x:xs)
+
+--e)
+span' :: (a -> Bool) -> [a] -> ([a],[a])
+span' _ [] = ([],[])
+span' f (x:xs) | f x = (x : fst(span' f xs), snd(span' f xs))
+               | otherwise = ([], (x:xs))
+
+--f)
+deleteBy' :: (a -> a -> Bool) -> a -> [a] -> [a]
+deleteBy' _ _ [] = []
+deleteBy' f v (x:xs) | f v x = xs
+                     | otherwise = x : deleteBy' f v xs
+
+
+--Ficha 6
+
+data BTree a = Empty | Node a (BTree a) (BTree a) deriving Show
+
+--1
+--a)
+altura :: BTree a -> Int
+altura Empty = 0
+altura (Node a l r) = max (altura l) (altura r) + 1
+
+--b)
+contaNodos :: BTree a -> Int
+contaNodos Empty = 0
+contaNodos (Node a l r) = 1 + contaNodos l + contaNodos r
+
+--c)
+folhas :: BTree a -> Int
+folhas Empty = 0
+folhas (Node a Empty Empty) = 1
+folhas (Node a l r) = folhas l + folhas r
+
+--d)
+prune :: Int -> BTree a -> BTree a
+prune 0 _ = Empty
+prune _ Empty = Empty
+prune n (Node a l r) | n > 0 = (Node a l r) : prune (n-1) l : prune (n-1) r
+                     | otherwise = Empty
