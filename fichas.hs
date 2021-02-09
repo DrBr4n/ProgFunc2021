@@ -367,27 +367,104 @@ deleteBy' f v (x:xs) | f v x = xs
 --Ficha 6
 
 data BTree a = Empty | Node a (BTree a) (BTree a) deriving Show
-
+x = (Node 4 (Node 3 (Node 1 (Node 2 Empty Empty) Empty) Empty) (Node 5 (Node 7 Empty Empty) (Node 9 Empty Empty)))
+y = (Node 4 (Node 3 (Node 1 (Node 2 Empty Empty) Empty) (Node 8 Empty Empty)) (Node 5 (Node 7 Empty Empty) (Node 9 Empty Empty)))
+z = (Node 6 (Node 3 (Node 1 Empty Empty) Empty) (Node 10 (Node 9 Empty Empty) (Node 12 Empty Empty)))
 --1
---a)
+--a
 altura :: BTree a -> Int
 altura Empty = 0
-altura (Node a l r) = max (altura l) (altura r) + 1
+altura (Node a l r) = 1 + max (altura l) (altura r)
 
---b)
+--b
 contaNodos :: BTree a -> Int
-contaNodos Empty = 0
-contaNodos (Node a l r) = 1 + contaNodos l + contaNodos r
+contaNodos Empty = 0 
+contaNodos (Node a l r) = 1 + contaNodos l + contaNodos r 
 
---c)
+--c
 folhas :: BTree a -> Int
 folhas Empty = 0
 folhas (Node a Empty Empty) = 1
 folhas (Node a l r) = folhas l + folhas r
 
---d)
+--d
 prune :: Int -> BTree a -> BTree a
-prune 0 _ = Empty
 prune _ Empty = Empty
-prune n (Node a l r) | n > 0 = (Node a l r) : prune (n-1) l : prune (n-1) r
-                     | otherwise = Empty
+prune 0 (Node a l r) = Empty
+prune n (Node a l r) = (Node a (prune (n-1) l) (prune (n-1) r))
+
+--e
+path :: [Bool] -> BTree a -> [a]
+path [] (Node a l r) = [a]
+path _ Empty = []
+path (h:t) (Node a l r) | h = a : path t r
+                        | not h = a : path t l
+
+--f
+mirror :: BTree a -> BTree a
+mirror Empty = Empty
+mirror (Node a l r) = Node a (mirror r) (mirror l)
+
+--g
+zipWithBT :: (a -> b -> c) -> BTree a -> BTree b -> BTree c
+zipWithBT f (Node a l r) (Node aa ll rr) = Node (f a aa) (zipWithBT f l ll) (zipWithBT f r rr)
+zipWithBT _ _ _ = Empty
+
+--h
+unzipBT :: BTree (a, b, c) -> (BTree a, BTree b, BTree c)
+unzipBT Empty = (Empty, Empty, Empty)
+unzipBT (Node (a, b, c) l r) = (Node a l1 r1, Node b l2 r2, Node c l3 r3)
+        where (l1, l2, l3) = unzipBT l
+              (r1, r2, r3) = unzipBT r
+
+--2
+--a
+minimo :: Ord a => BTree a -> a
+minimo (Node a Empty _) = a
+minimo (Node a l r) = minimo l
+
+--b
+semMinimo :: Ord a => BTree a -> BTree a
+semMinimo (Node a Empty _) = Empty
+semMinimo (Node a l r) = (Node a (semMinimo l) r)
+
+--c
+minSmin :: Ord a => BTree a -> (a, BTree a)
+minSmin (Node a Empty _) = (a, Empty)
+minSmin (Node a l r) =  (fst(minSmin l), Node a (snd(minSmin l)) r)
+
+--3
+type Aluno = (Numero,Nome,Regime,Classificacao)
+type Numero = Int
+type Nome = String
+data Regime = ORD | TE | MEL deriving Show
+data Classificacao = Aprov Int | Rep | Faltou deriving Show
+type Turma = BTree Aluno -- ´arvore bin´aria de procura (ordenada por n´umero)
+
+turma1 :: Turma
+turma1 = (Node (15,"Luís",ORD,Aprov 14) (Node (12,"Joana",MEL,Faltou) (Node (7,"Diogo",TE,Rep) Empty
+                                                                                               Empty) 
+                                                                      (Node (14,"Lara",ORD,Aprov 19) Empty
+                                                                                                     Empty))
+                                        (Node (20,"Pedro",TE,Aprov 10) Empty
+                                                                       (Node (25,"Sofia",ORD,Aprov 20) (Node (23,"Rita",ORD,Aprov 17) Empty
+                                                                                                                                      Empty)
+                                                                                                       (Node (28,"Vasco",MEL,Rep) Empty
+                                                                                                                                  Empty))))
+
+--a
+inscNum :: Numero -> Turma -> Bool
+inscNum n Empty = False
+inscNum n (Node (a,_,_,_) l r) | n < a = inscNum n l 
+                               | n > a = inscNum n r
+                               | n == a = True
+
+--b
+inscNome :: Nome -> Turma -> Bool
+inscNome n (Node (_,name,_,_) l r) | n == name || inscNome n l || inscNome n r
+
+--c
+trabEst :: Turma -> [(Numero,Nome)]
+trabEst Empty = []
+trabEst (Node (num,name,reg,_) l r) | (_,_,TE,_) = [(num,name)] ++ trabEst l ++ trabEst r
+                                    | otherwise = []
